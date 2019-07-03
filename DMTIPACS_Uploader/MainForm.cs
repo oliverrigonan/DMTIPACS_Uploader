@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.AccessControl;
+using System.Security.Permissions;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
@@ -39,11 +43,69 @@ namespace DMTIPACS_Uploader
             lblStatus.ForeColor = Color.IndianRed;
         }
 
-        private void FswSourceWatcher_Created(object sender, System.IO.FileSystemEventArgs e)
+        private void Onchanged(object sender, System.IO.FileSystemEventArgs e)
         {
             if (!btnStart.Enabled)
             {
+                listNotification.Items.Add(e.FullPath + " " + e.ChangeType.ToString() + " " + DateTime.Now.ToString());
+                CopyFiles(e);
+            }
+        }
 
+        public async void CopyFiles(System.IO.FileSystemEventArgs e)
+        {
+            await CopyFilesToDestination(e.FullPath, txtDestination.Text, DateTime.Now.ToString("yyyyMMddHHmmss") + "_" + e.Name);
+        }
+
+        public Task<bool> CopyFilesToDestination(string sourcePath, string destinationPath, string newFileName)
+        {
+            try
+            {
+                DirectoryInfo sourceDirectory = new DirectoryInfo(sourcePath);
+                DirectorySecurity sourceDirectorySecurity = sourceDirectory.GetAccessControl();
+                sourceDirectorySecurity.SetAccessRuleProtection(true, true);
+                sourceDirectory.SetAccessControl(sourceDirectorySecurity);
+
+                DirectoryInfo destinationDirectory = new DirectoryInfo(destinationPath);
+                DirectorySecurity destinationDirectorySecurity = destinationDirectory.GetAccessControl();
+                destinationDirectorySecurity.SetAccessRuleProtection(true, true);
+                destinationDirectory.SetAccessControl(destinationDirectorySecurity);
+
+                DirectoryInfo newDestinationDirectory = Directory.CreateDirectory(destinationPath + "\\" + sourceDirectory.Name);
+                DirectorySecurity newDestinationDirectorySecurity = newDestinationDirectory.GetAccessControl();
+                newDestinationDirectorySecurity.SetAccessRuleProtection(true, true);
+                newDestinationDirectory.SetAccessControl(newDestinationDirectorySecurity);
+
+                foreach (string directoryPath in Directory.GetDirectories(sourceDirectory.FullName))
+                {
+                    if (!Directory.Exists(directoryPath.Replace(sourcePath, destinationPath + "\\" + sourceDirectory.Name)))
+                    {
+                        Directory.CreateDirectory(directoryPath.Replace(sourcePath, destinationPath + "\\" + sourceDirectory.Name));
+
+                        foreach (string sourceFile in Directory.GetFiles(directoryPath))
+                        {
+                            string fileName = Path.GetFileName(sourceFile);
+                            string destinationFile = Path.Combine(directoryPath.Replace(sourcePath, destinationPath + "\\" + sourceDirectory.Name), fileName);
+
+                            File.Copy(sourceFile, destinationFile, true);
+                        }
+                    }
+                }
+
+                foreach (string sourceFile in Directory.GetFiles(sourcePath))
+                {
+                    string fileName = Path.GetFileName(sourceFile);
+                    string destinationFile = Path.Combine(destinationPath + "\\" + sourceDirectory.Name, fileName);
+
+                    File.Copy(sourceFile, destinationFile, true);
+                }
+
+                return Task.FromResult(true);
+            }
+            catch (Exception ex)
+            {
+                listNotification.Items.Add(ex.Message + " " + DateTime.Now.ToString());
+                return Task.FromResult(false);
             }
         }
 
@@ -51,6 +113,8 @@ namespace DMTIPACS_Uploader
         {
             fbdOpenSource.ShowDialog();
             txtSource.Text = fbdOpenSource.SelectedPath;
+
+            fswSourceWatcher.Path = txtSource.Text;
         }
 
         private void BtnOpenDestination_Click(object sender, EventArgs e)

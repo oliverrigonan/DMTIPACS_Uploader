@@ -31,6 +31,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.lblStatus = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.txtSource = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -45,8 +47,6 @@
             this.fswSourceWatcher = new System.IO.FileSystemWatcher();
             this.fbdOpenSource = new System.Windows.Forms.FolderBrowserDialog();
             this.fbdOpenDestination = new System.Windows.Forms.FolderBrowserDialog();
-            this.label5 = new System.Windows.Forms.Label();
-            this.lblStatus = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -60,7 +60,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(463, 44);
+            this.panel1.Size = new System.Drawing.Size(537, 44);
             this.panel1.TabIndex = 0;
             // 
             // label1
@@ -83,8 +83,28 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel2.Location = new System.Drawing.Point(0, 418);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(463, 27);
+            this.panel2.Size = new System.Drawing.Size(537, 27);
             this.panel2.TabIndex = 1;
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.ForeColor = System.Drawing.Color.IndianRed;
+            this.lblStatus.Location = new System.Drawing.Point(475, 7);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(50, 13);
+            this.lblStatus.TabIndex = 4;
+            this.lblStatus.Text = "Stopped!";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.ForeColor = System.Drawing.Color.White;
+            this.label5.Location = new System.Drawing.Point(434, 7);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(40, 13);
+            this.label5.TabIndex = 3;
+            this.label5.Text = "Status:";
             // 
             // label2
             // 
@@ -101,7 +121,7 @@
             this.txtSource.Location = new System.Drawing.Point(78, 59);
             this.txtSource.Name = "txtSource";
             this.txtSource.ReadOnly = true;
-            this.txtSource.Size = new System.Drawing.Size(292, 20);
+            this.txtSource.Size = new System.Drawing.Size(366, 20);
             this.txtSource.TabIndex = 2;
             // 
             // label3
@@ -127,12 +147,12 @@
             this.txtDestination.Location = new System.Drawing.Point(78, 85);
             this.txtDestination.Name = "txtDestination";
             this.txtDestination.ReadOnly = true;
-            this.txtDestination.Size = new System.Drawing.Size(292, 20);
+            this.txtDestination.Size = new System.Drawing.Size(366, 20);
             this.txtDestination.TabIndex = 4;
             // 
             // btnOpenSource
             // 
-            this.btnOpenSource.Location = new System.Drawing.Point(376, 57);
+            this.btnOpenSource.Location = new System.Drawing.Point(450, 57);
             this.btnOpenSource.Name = "btnOpenSource";
             this.btnOpenSource.Size = new System.Drawing.Size(75, 23);
             this.btnOpenSource.TabIndex = 6;
@@ -142,7 +162,7 @@
             // 
             // btnOpenDestination
             // 
-            this.btnOpenDestination.Location = new System.Drawing.Point(376, 83);
+            this.btnOpenDestination.Location = new System.Drawing.Point(450, 83);
             this.btnOpenDestination.Name = "btnOpenDestination";
             this.btnOpenDestination.Size = new System.Drawing.Size(75, 23);
             this.btnOpenDestination.TabIndex = 7;
@@ -159,12 +179,12 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel3.Location = new System.Drawing.Point(0, 123);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(463, 295);
+            this.panel3.Size = new System.Drawing.Size(537, 295);
             this.panel3.TabIndex = 8;
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(298, 6);
+            this.btnStart.Location = new System.Drawing.Point(372, 6);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(75, 23);
             this.btnStart.TabIndex = 2;
@@ -174,7 +194,7 @@
             // 
             // btnStop
             // 
-            this.btnStop.Location = new System.Drawing.Point(376, 6);
+            this.btnStop.Location = new System.Drawing.Point(450, 6);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(75, 23);
             this.btnStop.TabIndex = 1;
@@ -187,41 +207,25 @@
             this.listNotification.FormattingEnabled = true;
             this.listNotification.Location = new System.Drawing.Point(12, 34);
             this.listNotification.Name = "listNotification";
-            this.listNotification.Size = new System.Drawing.Size(439, 251);
+            this.listNotification.Size = new System.Drawing.Size(513, 251);
             this.listNotification.TabIndex = 0;
             // 
             // fswSourceWatcher
             // 
             this.fswSourceWatcher.EnableRaisingEvents = true;
+            this.fswSourceWatcher.NotifyFilter = ((System.IO.NotifyFilters)((((System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.DirectoryName) 
+            | System.IO.NotifyFilters.LastWrite) 
+            | System.IO.NotifyFilters.LastAccess)));
             this.fswSourceWatcher.SynchronizingObject = this;
-            this.fswSourceWatcher.Created += new System.IO.FileSystemEventHandler(this.FswSourceWatcher_Created);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(360, 7);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(40, 13);
-            this.label5.TabIndex = 3;
-            this.label5.Text = "Status:";
-            // 
-            // lblStatus
-            // 
-            this.lblStatus.AutoSize = true;
-            this.lblStatus.ForeColor = System.Drawing.Color.IndianRed;
-            this.lblStatus.Location = new System.Drawing.Point(401, 7);
-            this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(50, 13);
-            this.lblStatus.TabIndex = 4;
-            this.lblStatus.Text = "Stopped!";
+            this.fswSourceWatcher.Changed += new System.IO.FileSystemEventHandler(this.Onchanged);
+            this.fswSourceWatcher.Created += new System.IO.FileSystemEventHandler(this.Onchanged);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(463, 445);
+            this.ClientSize = new System.Drawing.Size(537, 445);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.btnOpenDestination);
             this.Controls.Add(this.btnOpenSource);
